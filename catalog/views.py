@@ -4,10 +4,10 @@ from django.shortcuts import render
 
 
 def home(request):
-    return render(request,'catalog/home.html')
+    return render(request,'home.html')
 
 def contacts(request):
-    return render(request, 'catalog/contacts.html')
+    return render(request, 'contacts.html')
 
 def form_contacts(request):
     if request.method == 'POST':
@@ -17,4 +17,4 @@ def form_contacts(request):
 
         return HttpResponse(f'Спасибо, {name}! Данные получены')
 
-    return render(request, 'catalog/contacts.html')
+    return render(request, 'contacts.html')
