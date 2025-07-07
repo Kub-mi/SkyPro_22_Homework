@@ -41,6 +41,15 @@
                 </div>
             </div>
         </div>
+            <h1>Последние 5 продуктов</h1>
+            <ul>
+              {% for product in products %}
+                <li>{{ product.name }} — {{ product.created_at }}</li>
+              {% empty %}
+                <li>Нет продуктов</li>
+              {% endfor %}
+            </ul>
+
     </div>
 
     <footer class="pt-4 my-md-5 pt-md-5 border-top">
