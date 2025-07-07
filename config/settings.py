@@ -80,7 +80,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 ATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postqresql_psycopg2',
+        'ENGINE': 'django.db.backends.postqresql',
         'NAME': os.getenv('NAME'),
         'USER': os.getenv('USER'),
         'PASSWORD': os.getenv('PASSWORD'),
