@@ -80,7 +80,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 ATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postqresql_psycpg2',
+        'ENGINE': 'django.db.backends.postqresql_psycopg2',
         'NAME': os.getenv('NAME'),
         'USER': os.getenv('USER'),
         'PASSWORD': os.getenv('PASSWORD'),
@@ -127,6 +127,11 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
