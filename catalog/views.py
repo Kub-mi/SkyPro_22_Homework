@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from catalog.models import Product
 
 
@@ -9,10 +9,10 @@ def home_view(request):
     for product in latest_products:
         print(f"{product.name} — {product.created_at}")
 
-    return render(request, 'home.html', {'products': latest_products})
+    return render(request, 'catalog/home.html', {'products': latest_products})
 
 def contacts(request):
-    return render(request, 'contacts.html')
+    return render(request, 'catalog/contacts.html')
 
 def form_contacts(request):
     if request.method == 'POST':
@@ -22,4 +22,8 @@ def form_contacts(request):
 
         return HttpResponse(f'Спасибо, {name}! Данные получены')
 
-    return render(request, 'contacts.html')
+    return render(request, 'catalog/contacts.html')
+
+def product_details(request, prod_id):
+    product = get_object_or_404(Product, id=prod_id)
+    return render(request,'catalog/product_details.html', {'product': product})
