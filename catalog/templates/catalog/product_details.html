@@ -5,6 +5,7 @@
 {% block content %}
 
 <div class="container">
+    <a href="/catalog/">← Назад на главную</a>
     <h1>{{ product.name | upper}}</h1>
     <p>Описание: {{ product.description }}</p>
     <p>Категория: {{ product.category }}</p>
@@ -12,5 +13,6 @@
     <p>Дата создания: {{ product.created_at }}</p>
     <p>Дата обновления: {{ product.updated_at }}</p>
 </div>
+
 
 {% endblock %}
