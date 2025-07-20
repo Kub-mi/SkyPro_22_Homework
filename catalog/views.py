@@ -2,12 +2,17 @@ from unicodedata import category
 
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
+from django.core.paginator import Paginator
 from catalog.models import Product, Category
 
 
 def home_view(request):
     products = Product.objects.all()
-    return render(request, 'catalog/home.html', {'products': products})
+    paginator = Paginator(products, 6)
+
+    page_num = request.GET.get('page')
+    page_obj = paginator.get_page(page_num)
+    return render(request, 'catalog/home.html', {'page_obj': page_obj})
 
 
 def contacts(request):

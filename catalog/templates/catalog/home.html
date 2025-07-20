@@ -5,7 +5,7 @@
 {% block content %}
 <h1>Наши товары</h1>
 <div class="product-list">
-    {% for product in products %}
+    {% for product in page_obj %}
         <div class="product-card">
             <a href="{% url 'catalog:product_details' product.id %}"><h2>{{ product.name }}</h2></a>
             </a>
@@ -13,6 +13,17 @@
             <p><strong>Цена: </strong> {{ product.price }} руб.</p>
         </div>
     {% endfor %}
-</div>
 
+    <div class="paginator">
+        {% if page_obj.has_previos %}
+            <a href="?page={{ page_obj.previous_page_number }}">← Назад</a>
+        {% endif %}
+
+        <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_page }}</span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.naxt_page_number }}">Вперёд →</a>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}
