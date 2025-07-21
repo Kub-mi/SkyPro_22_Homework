@@ -53,6 +53,6 @@ def add_product(request):
             price=price
         )
 
-        return redirect('home')
+        return redirect('/catalog/')
     categories = Category.objects.all()
-    return render(request,'catalog/add_product/html', {'categories': categories})
+    return render(request,'catalog/add_product.html', {'categories': categories})
