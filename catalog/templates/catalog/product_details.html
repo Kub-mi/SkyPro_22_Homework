@@ -6,6 +6,9 @@
 
 <div class="container">
     <a href="/catalog/">← Назад на главную</a>
+    {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" width="300">
+    {% endif %}
     <h1>{{ product.name | upper}}</h1>
     <p>Описание: {{ product.description }}</p>
     <p>Категория: {{ product.category }}</p>

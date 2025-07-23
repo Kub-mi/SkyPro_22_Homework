@@ -9,6 +9,9 @@
         <div class="product-card">
             <a href="{% url 'catalog:product_details' product.id %}"><h2>{{ product.name }}</h2></a>
             </a>
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" width="200">
+            {% endif %}
             <p>{{ product.description | truncatechars:100 }}</p>
             <p><strong>Цена: </strong> {{ product.price }} руб.</p>
         </div>
