@@ -14,15 +14,16 @@ class BlogPostListView(ListView):
     def get_queryset(self):
         return BlogPost.objects.filter(is_published=True).order_by('-created_at')
 
-    def test_email_view(request):
-        send_mail(
-            'Тест Django',
-            'Если ты читаешь это, то всё работает ✅',
-            'your_email@gmail.com',
-            ['your_email@gmail.com'],
-            fail_silently=False,
-        )
-        return HttpResponse('Письмо отправлено!')
+
+def test_email_view(request):
+    send_mail(
+        'Тест Django',
+        'Если ты читаешь это, то всё работает ✅',
+        'your_email@gmail.com',
+        ['mikhailkubrak02@gmail.com'],
+        fail_silently=False,
+    )
+    return HttpResponse('Письмо отправлено!')
 
 
 class BlogPostDetailView(DetailView):
