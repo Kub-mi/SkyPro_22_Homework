@@ -1,10 +1,11 @@
-{% extends "base.html" %}
+{% extends "blog/base.html" %}
+{% block title %}{% if form.instance.pk %}Редактирование{% else %}Создание{% endif %} записи{% endblock %}
 {% block content %}
   <h1>{% if form.instance.pk %}Редактировать{% else %}Создать{% endif %} запись</h1>
-  <form method="post" enctype="multipart/form-data">
+  <form method="post" enctype="multipart/form-data" class="mb-4">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Сохранить</button>
+    <button type="submit" class="btn btn-success">Сохранить</button>
+    <a href="{% url 'blog:list' %}" class="btn btn-secondary">Назад</a>
   </form>
-  <a href="{% url 'blog:list' %}">Назад</a>
 {% endblock %}
