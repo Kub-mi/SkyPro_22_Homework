@@ -1,0 +1,10 @@
+{% extends "blod/base.html" %}
+{% block title %}Удаление записи{% endblock %}
+{% block content %}
+  <h1>Удалить "{{ object.title }}"?</h1>
+  <form method="post" class="mb-4">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Да, удалить</button>
+    <a href="{% url 'blog:detail' object.pk %}" class="btn btn-secondary">Отмена</a>
+  </form>
+{% endblock %}

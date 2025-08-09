@@ -1,0 +1,18 @@
+{% extends "blog/base.html" %}
+{% block title %}{{ post.title }}{% endblock %}
+{% block content %}
+  <div class="card mb-3">
+    <div class="card-body">
+      <h1>{{ post.title }}</h1>
+      {% if post.preview %}
+        <img src="{{ post.preview.url }}" class="img-fluid my-3" alt="Превью">
+      {% endif %}
+      <p>{{ post.content }}</p>
+      <small class="text-muted">Просмотров: {{ post.views_count }}</small>
+      <hr>
+      <a href="{% url 'blog:update' post.pk %}" class="btn btn-warning">Редактировать</a>
+      <a href="{% url 'blog:delete' post.pk %}" class="btn btn-danger">Удалить</a>
+      <a href="{% url 'blog:list' %}" class="btn btn-secondary">Назад</a>
+    </div>
+  </div>
+{% endblock %}
