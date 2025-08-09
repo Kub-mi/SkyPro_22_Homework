@@ -24,3 +24,13 @@ class ProductForm(forms.ModelForm):
 
     def clean_description(self):
         return self._check_bad(self.cleaned_data.get('description'), 'Описание')
+
+    def clean_price(self):
+        price = self.cleaned_data.get('price')
+
+        if price is None:
+            return price
+        if price < 0:
+            # Сообщение попадёт под поле «Цена» в шаблоне
+            raise ValidationError('Цена не может быть отрицательной.')
+        return price
