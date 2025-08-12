@@ -1,14 +1,8 @@
 from django.urls import path
-from . import views
-from .views import HomeView, ContactView, FormContactsView, ProductDetailView, AddProductView
+from .views import HomeView, ContactView, FormContactsView, ProductDetailView, ProductCreateView, ProductUpdateView, ProductDeleteView
+from django.conf import settings
+from django.conf.urls.static import static
 
-# urlpatterns  = [
-#     path('', views.home_view, name='home'),
-#     path('contacts/', views.contacts, name='contact'),
-#     path('form_contacts/', views.form_contacts, name='form_contacts'),
-#     path('product_details/<int:id>/', views.product_details, name='product_details'),
-#     path('add_product/', views.add_product, name='add_product'),
-# ]
 
 app_name = 'catalog'
 
@@ -16,6 +10,9 @@ urlpatterns = [
     path('', HomeView.as_view(), name='home'),
     path('contacts/', ContactView.as_view(), name='contact'),
     path('form_contacts/', FormContactsView.as_view(), name='form_contacts'),
-    path('product_details/<int:id>/', ProductDetailView.as_view(), name='product_details'),
-    path('add_product/', AddProductView.as_view(), name='add_product'),
-]
+
+    path('products/create/', ProductCreateView.as_view(), name='product_create'),
+    path('products/<int:pk>/', ProductDetailView.as_view(), name='product_detail'),
+    path('products/<int:pk>/update/', ProductUpdateView.as_view(), name='product_update'),
+    path('products/<int:pk>/delete/', ProductDeleteView.as_view(), name='product_delete'),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
