@@ -2,11 +2,11 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, TemplateView, View, CreateView, UpdateView, DeleteView
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from catalog.forms import ProductForm
-from catalog.models import Product, Category
-from django.views.generic import ListView, DetailView, TemplateView, View, CreateView
+from catalog.models import Product
 
 
 class HomeView(ListView):

@@ -4,8 +4,11 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth import login
 from django.views.generic import FormView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import UpdateView
 
-from users.forms import CustomUserCreationForm
+from users.forms import CustomUserCreationForm, ProfileUpdateForm
+from users.models import CustomUser
 
 
 class SignUpView(FormView):
@@ -44,3 +47,15 @@ class CustomLoginView(LoginView):
         )
         login(self.request, user)
         return super().form_valid(form)
+
+
+class ProfileUpdateView(LoginRequiredMixin, UpdateView):
+    model = CustomUser
+    form_class = ProfileUpdateForm
+    template_name = "registration/profile_edit.html"
+    success_url = reverse_lazy("profile_edit")  # вернёмся на эту же страницу
+    login_url = "login"
+    redirect_field_name = "next"
+
+    def get_object(self, queryset=None):
+        return self.request.user
