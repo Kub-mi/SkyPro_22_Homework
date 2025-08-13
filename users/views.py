@@ -30,13 +30,11 @@ class CustomLoginView(LoginView):
     authentication_form = CustomUserCreationForm
     template_name = 'registration/login.html'
     redirect_authenticated_user = True
-
-    def get_success_url(self):
-        return self.get_redirect_url() or reverse_lazy('home')
+    success_url = reverse_lazy('home')
 
     def form_valid(self, form):
-        user = form.save()  # создаём пользователя (UserCreationForm сам хеширует пароль)
-        # приветственное письмо (по требованиям ДЗ и по конспекту)
+        user = form.save()
+
         send_mail(
             subject="Добро пожаловать!",
             message="Спасибо за регистрацию в нашем сервисе.",
