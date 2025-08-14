@@ -7,14 +7,14 @@ from django.views.generic import FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import UpdateView
 
-from users.forms import CustomUserCreationForm, ProfileUpdateForm
+from users.forms import CustomUserCreationForm, ProfileUpdateForm, CustomAuthenticationForm
 from users.models import CustomUser
 
 
 class SignUpView(FormView):
     form_class = CustomUserCreationForm
     template_name = "registration/signup.html"
-    success_url = reverse_lazy("home")
+    success_url = reverse_lazy("catalog:home")
 
     def form_valid(self, form):
         user = form.save()
@@ -30,10 +30,10 @@ class SignUpView(FormView):
 
 
 class CustomLoginView(LoginView):
-    authentication_form = CustomUserCreationForm
+    authentication_form = CustomAuthenticationForm
     template_name = 'registration/login.html'
     redirect_authenticated_user = True
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('catalog:home')
 
     def form_valid(self, form):
         user = form.save()
