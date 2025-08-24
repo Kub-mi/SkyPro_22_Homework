@@ -48,6 +48,10 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
     login_url = "login"
     redirect_field_name = "next"
 
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
+
 
 class ProductUpdateView(LoginRequiredMixin, UpdateView):
     model = Product
@@ -57,6 +61,9 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
     login_url = "login"
     redirect_field_name = "next"
 
+    def test_func(self):
+        return self.get_object().owner == self.request.user
+
 
 class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
@@ -64,6 +71,10 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('catalog:home')
     login_url = "login"
     redirect_field_name = "next"
+    def test_func(self):
+        obj = self.get_object()
+        user = self.request.user
+        return obj.owner == user or user.has_perm("catalog.delete_product")
 
 
 class ProductUnpublishView(LoginRequiredMixin, PermissionRequiredMixin, View):
