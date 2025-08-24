@@ -7,6 +7,8 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin,PermissionRequiredMixin
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
+from .models import Category
+from .services import get_products_by_category
 
 from catalog.forms import ProductForm
 from catalog.models import Product
@@ -98,3 +100,22 @@ class ProductUnpublishView(LoginRequiredMixin, PermissionRequiredMixin, View):
         else:
             messages.info(request, "Продукт уже не опубликован.")
         return redirect("catalog:product_details")
+
+
+class CategoryProductsView(ListView):
+    template_name = "catalog/category_products.html"
+    context_object_name = "page_obj"   # чтобы шаблон пагинации совпадал со стилем проекта
+    paginate_by = 12
+
+    def dispatch(self, request, *args, **kwargs):
+        # получаем категорию один раз, используем в queryset и контексте
+        self.category = get_object_or_404(Category, pk=self.kwargs["pk"])
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return get_products_by_category(self.category.pk)
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["category"] = self.category
+        return ctx
