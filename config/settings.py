@@ -153,3 +153,16 @@ AUTH_USER_MODEL = 'users.CustomUser'
 
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
+
+AUTH_USER_MODEL = 'users.CustomUser'
+
+CACHES={
+    'default':{
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/1',
+    }
+}
+
+PRODUCT_DETAIL_CACHE_TTL = 60 * 10
+
+PRODUCT_LIST_CACHE_TTL = 60 * 5
