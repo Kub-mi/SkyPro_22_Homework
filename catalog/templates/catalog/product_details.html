@@ -19,6 +19,21 @@
       <a href="{% url 'catalog:product_update' product.pk %}">Редактировать</a> |
       <a href="{% url 'catalog:product_delete' product.pk %}">Удалить</a>
     {% endif %}
+    {% if user.is_authenticated %}
+      {# Отменить публикацию — только у кого есть кастомное право #}
+      {% if perms.catalog.can_unpublish_product and object.is_published %}
+        <form method="post" action="{% url 'catalog:product_unpublish' object.pk %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-warning">Отменить публикацию</button>
+        </form>
+      {% endif %}
+
+      {# Удаление — только у кого есть право delete_product (модераторы) #}
+      {% if perms.catalog.delete_product %}
+        <a class="btn btn-danger" href="{% url 'catalog:product_delete' object.pk %}">Удалить</a>
+      {% endif %}
+    {% endif %}
+
   </p>
 </div>
 {% endblock %}
