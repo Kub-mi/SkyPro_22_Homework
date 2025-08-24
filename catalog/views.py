@@ -5,9 +5,12 @@ from django.views.generic import ListView, DetailView, TemplateView, View, Creat
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin,PermissionRequiredMixin
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 
 from catalog.forms import ProductForm
 from catalog.models import Product
+from django.conf import settings
 
 
 class HomeView(ListView):
@@ -31,6 +34,11 @@ class FormContactsView(View):
         message = request.POST.get('message')
         return HttpResponse(f'Спасибо, {name}! Данные получены')
 
+
+@method_decorator(
+    cache_page(settings.PRODUCT_DETAIL_CACHE_TTL, key_prefix="product"),
+    name="dispatch",
+)
 
 class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
