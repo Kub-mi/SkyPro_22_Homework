@@ -8,11 +8,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin,PermissionRequiredMixi
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from .models import Category
-from .services import get_products_by_category
+from django.core.paginator import Paginator
+from .services import get_category_product_ids, get_products_by_ids_preserving_order
 
 from catalog.forms import ProductForm
 from catalog.models import Product
 from django.conf import settings
+
 
 
 class HomeView(ListView):
@@ -102,20 +104,29 @@ class ProductUnpublishView(LoginRequiredMixin, PermissionRequiredMixin, View):
         return redirect("catalog:product_details")
 
 
-class CategoryProductsView(ListView):
+class CategoryProductsView(View):
     template_name = "catalog/category_products.html"
-    context_object_name = "page_obj"   # чтобы шаблон пагинации совпадал со стилем проекта
-    paginate_by = 12
+    per_page = 12  # как и раньше
 
-    def dispatch(self, request, *args, **kwargs):
-        # получаем категорию один раз, используем в queryset и контексте
-        self.category = get_object_or_404(Category, pk=self.kwargs["pk"])
-        return super().dispatch(request, *args, **kwargs)
+    def get(self, request, pk: int):
+        category = get_object_or_404(Category, pk=pk)
 
-    def get_queryset(self):
-        return get_products_by_category(self.category.pk)
+        # 1) из кеша — упорядоченный список ID
+        all_ids = get_category_product_ids(category.id)
 
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        ctx["category"] = self.category
-        return ctx
+        # 2) пагинация по ID
+        paginator = Paginator(all_ids, self.per_page)
+        page_number = request.GET.get("page") or 1
+        page_obj = paginator.get_page(page_number)
+
+        # 3) достаем объекты одной пачкой, сохраняя порядок
+        page_ids = list(page_obj.object_list)
+        products = get_products_by_ids_preserving_order(page_ids)
+
+        context = {
+            "category": category,
+            "products": products,  # список для рендера карточек
+            "page_obj": page_obj,  # навигация пагинатора
+        }
+        return render(request, self.template_name, context)
+
