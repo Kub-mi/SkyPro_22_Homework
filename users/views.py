@@ -1,0 +1,61 @@
+from django.contrib.auth.views import LoginView
+from django.urls import reverse_lazy
+from django.core.mail import send_mail
+from django.conf import settings
+from django.contrib.auth import login
+from django.views.generic import FormView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import UpdateView
+
+from users.forms import CustomUserCreationForm, ProfileUpdateForm, CustomAuthenticationForm
+from users.models import CustomUser
+
+
+class SignUpView(FormView):
+    form_class = CustomUserCreationForm
+    template_name = "registration/signup.html"
+    success_url = reverse_lazy("catalog:home")
+
+    def form_valid(self, form):
+        user = form.save()
+        send_mail(
+            subject="Добро пожаловать!",
+            message="Спасибо за регистрацию в нашем сервисе.",
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[user.email],
+            fail_silently=False,
+        )
+        login(self.request, user)
+        return super().form_valid(form)
+
+
+class CustomLoginView(LoginView):
+    authentication_form = CustomAuthenticationForm
+    template_name = 'registration/login.html'
+    redirect_authenticated_user = True
+    success_url = reverse_lazy('catalog:home')
+
+    def form_valid(self, form):
+        user = form.save()
+
+        send_mail(
+            subject="Добро пожаловать!",
+            message="Спасибо за регистрацию в нашем сервисе.",
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[user.email],
+            fail_silently=False,
+        )
+        login(self.request, user)
+        return super().form_valid(form)
+
+
+class ProfileUpdateView(LoginRequiredMixin, UpdateView):
+    model = CustomUser
+    form_class = ProfileUpdateForm
+    template_name = "registration/profile_edit.html"
+    success_url = reverse_lazy("profile_edit")  # вернёмся на эту же страницу
+    login_url = "login"
+    redirect_field_name = "next"
+
+    def get_object(self, queryset=None):
+        return self.request.user

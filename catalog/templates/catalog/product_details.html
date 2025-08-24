@@ -15,8 +15,10 @@
   <p>Дата обновления: {{ product.updated_at }}</p>
 
   <p class="mt-3">
-    <a href="{% url 'catalog:product_update' product.pk %}">Редактировать</a> |
-    <a href="{% url 'catalog:product_delete' product.pk %}">Удалить</a>
+    {% if user.is_authenticated %}
+      <a href="{% url 'catalog:product_update' product.pk %}">Редактировать</a> |
+      <a href="{% url 'catalog:product_delete' product.pk %}">Удалить</a>
+    {% endif %}
   </p>
 </div>
 {% endblock %}

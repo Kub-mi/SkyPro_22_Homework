@@ -1,0 +1,17 @@
+{% extends "users/base.html" %}
+{% block content %}
+  <h2>Профиль</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <p>Аватар: {{ form.avatar }} {{ form.avatar.errors }}</p>
+    <p>Телефон: {{ form.phone }} {{ form.phone.errors }}</p>
+    <p>Страна: {{ form.country }} {{ form.country.errors }}</p>
+    <button type="submit">Сохранить</button>
+  </form>
+
+  {% if user.avatar %}
+    <p>Текущий аватар:</p>
+    <img src="{{ user.avatar.url }}" alt="avatar" style="max-height:120px;">
+  {% endif %}
+{% endblock %}

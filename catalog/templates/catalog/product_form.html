@@ -40,8 +40,9 @@
     {{ form.price }}
     <div class="text-danger small">{{ form.price.errors }}</div>
   </div>
-
-  <button type="submit" class="btn btn-primary">Сохранить</button>
-  <a href="{% url 'catalog:home' %}" class="btn btn-secondary">Отмена</a>
+  {% if user.is_authenticated %
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+    <a href="{% url 'catalog:home' %}" class="btn btn-secondary">Отмена</a>
+  {% endif %}
 </form>
 {% endblock %}
