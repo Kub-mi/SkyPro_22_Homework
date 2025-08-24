@@ -2,8 +2,9 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, TemplateView, View, CreateView, UpdateView, DeleteView
-
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin,PermissionRequiredMixin
 
 from catalog.forms import ProductForm
 from catalog.models import Product
@@ -63,3 +64,18 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('catalog:home')
     login_url = "login"
     redirect_field_name = "next"
+
+
+class ProductUnpublishView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = 'catalog.can_unpublished_product'
+    raise_exception = True
+
+    def post(self, request, pk):
+        product = get_object_or_404(Product, pk=pk)
+        if product.is_published:
+            product.is_published = False
+            product.save(update_fields=['is_published'])
+            messages.success(request, "Публикация продукта отменена")
+        else:
+            messages.info(request, "Продукт уже не опубликован.")
+        return redirect("catalog:product_details")
