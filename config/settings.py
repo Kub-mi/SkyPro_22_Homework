@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 
     'catalog',
     'blog',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -90,8 +91,6 @@ DATABASES = {
 
     }
 }
-
-print("DEBUG USER:", os.getenv("POSTGRES_USER"))
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -149,3 +148,8 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')       # из .env
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')  # из .env
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+AUTH_USER_MODEL = 'users.CustomUser'
+
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'
