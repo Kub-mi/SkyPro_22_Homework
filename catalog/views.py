@@ -36,7 +36,7 @@ class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
     template_name = 'catalog/product_details.html'
     context_object_name = 'product'
-    login_url = "login"
+    # login_url = "login"
     redirect_field_name = "next"
 
 
@@ -45,7 +45,7 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
     form_class = ProductForm
     template_name = 'catalog/product_form.html'
     success_url = reverse_lazy('catalog:home')
-    login_url = "login"
+    # login_url = "login"
     redirect_field_name = "next"
 
     def form_valid(self, form):
@@ -58,7 +58,7 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
     form_class = ProductForm
     template_name = 'catalog/product_form.html'
     success_url = reverse_lazy('catalog:home')
-    login_url = "login"
+    # login_url = "login"
     redirect_field_name = "next"
 
     def test_func(self):
@@ -69,7 +69,7 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     template_name = 'catalog/product_confirm_delete.html'
     success_url = reverse_lazy('catalog:home')
-    login_url = "login"
+    # login_url = "login"
     redirect_field_name = "next"
     def test_func(self):
         obj = self.get_object()
