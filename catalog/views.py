@@ -2,8 +2,9 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, TemplateView, View, CreateView, UpdateView, DeleteView
-
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin,PermissionRequiredMixin
 
 from catalog.forms import ProductForm
 from catalog.models import Product
@@ -35,7 +36,7 @@ class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
     template_name = 'catalog/product_details.html'
     context_object_name = 'product'
-    login_url = "login"
+    # login_url = "login"
     redirect_field_name = "next"
 
 
@@ -44,8 +45,12 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
     form_class = ProductForm
     template_name = 'catalog/product_form.html'
     success_url = reverse_lazy('catalog:home')
-    login_url = "login"
+    # login_url = "login"
     redirect_field_name = "next"
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
 
 
 class ProductUpdateView(LoginRequiredMixin, UpdateView):
@@ -53,13 +58,35 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
     form_class = ProductForm
     template_name = 'catalog/product_form.html'
     success_url = reverse_lazy('catalog:home')
-    login_url = "login"
+    # login_url = "login"
     redirect_field_name = "next"
+
+    def test_func(self):
+        return self.get_object().owner == self.request.user
 
 
 class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     template_name = 'catalog/product_confirm_delete.html'
     success_url = reverse_lazy('catalog:home')
-    login_url = "login"
+    # login_url = "login"
     redirect_field_name = "next"
+    def test_func(self):
+        obj = self.get_object()
+        user = self.request.user
+        return obj.owner == user or user.has_perm("catalog.delete_product")
+
+
+class ProductUnpublishView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = 'catalog.can_unpublished_product'
+    raise_exception = True
+
+    def post(self, request, pk):
+        product = get_object_or_404(Product, pk=pk)
+        if product.is_published:
+            product.is_published = False
+            product.save(update_fields=['is_published'])
+            messages.success(request, "Публикация продукта отменена")
+        else:
+            messages.info(request, "Продукт уже не опубликован.")
+        return redirect("catalog:product_details")
